@@ -1,74 +1,74 @@
-# Cam Drawer
+# Hand Canvas
 
-Webcam uzerinden el hareketleriyle havaya cizim yapmanizi saglayan tarayici tabanli bir uygulama. MediaPipe kullanarak el ve yuz takibi yapar; basparmak ile isaret parmagini sikistirarak (pinch) cizim yapabilirsiniz.
+A browser-based drawing application that lets you draw in the air using hand gestures via your webcam. It uses MediaPipe for real-time hand and face tracking -- pinch your thumb and index finger together to start drawing.
 
-## Ozellikler
+## Features
 
-- **El ile cizim** -- Basparmak + isaret parmagi sikistirma hareketi ile cizim baslar, parmaklar acilinca durur
-- **Kalem & Silgi** -- Araç cubugu veya el jestleri ile gecis yapilabilir
-- **Renk paleti** -- 10 farkli renk secenegi (beyaz, kirmizi, turuncu, sari, yesil, cyan, mavi, mor, pembe, gri)
-- **Firca boyutu** -- 2px - 40px arasi ayarlanabilir slider
-- **Geri alma (Undo)** -- 20 adima kadar geri alma destegi
-- **Kaydet** -- Cizimi PNG olarak indir
-- **Dil ile silme** -- Dilinizi cikararak tuvali temizleyin (acilip kapatilabilir)
+- **Hand drawing** -- Pinch thumb + index finger to draw, release to stop
+- **Pen & Eraser** -- Switch between tools via the toolbar or hand gestures
+- **Color palette** -- 10 color options (white, red, orange, yellow, green, cyan, blue, purple, pink, gray)
+- **Brush size** -- Adjustable slider from 2px to 40px
+- **Undo** -- Supports up to 20 undo steps
+- **Save** -- Download your drawing as a PNG
+- **Tongue erase** -- Stick out your tongue to clear the canvas (can be toggled on/off)
 
-## El Jestleri
+## Hand Gestures
 
-| Jest | Islem |
-|------|-------|
-| Basparmak + Isaret parmagi (pinch) | Cizim yap |
-| Basparmak + Orta parmak | Buyuk firca / normal firca gecisi |
-| Basparmak + Yuzuk parmagi | Geri al |
-| Basparmak + Serce parmak | Sonraki renge gec |
-| Dil cikarma | Tuvali temizle |
+| Gesture | Action |
+|---------|--------|
+| Thumb + Index finger (pinch) | Draw |
+| Thumb + Middle finger | Toggle big / normal brush |
+| Thumb + Ring finger | Undo |
+| Thumb + Pinky finger | Cycle to next color |
+| Stick out tongue | Clear canvas |
 
-## Teknolojiler
+## Technologies
 
-- **HTML5 Canvas** -- Cizim ve overlay katmanlari
-- **MediaPipe Hands** -- El landmark tespiti ve takibi
-- **MediaPipe Face Mesh** -- Yuz landmark tespiti (dil algilama icin)
-- **MediaPipe Camera Utils** -- Webcam erisimi
-- Vanilla JavaScript, harici framework yok
+- **HTML5 Canvas** -- Drawing and overlay layers
+- **MediaPipe Hands** -- Hand landmark detection and tracking
+- **MediaPipe Face Mesh** -- Face landmark detection (for tongue detection)
+- **MediaPipe Camera Utils** -- Webcam access
+- Vanilla JavaScript, no external frameworks
 
-## Kurulum
+## Getting Started
 
-Herhangi bir build aracina veya `npm install`'a gerek yoktur. Dosyalari bir HTTP sunucusu uzerinden servis edin:
+No build tools or `npm install` required. Just serve the files over an HTTP server:
 
 ```bash
-# Python ile
+# With Python
 python3 -m http.server 8000
 
-# Node.js ile (npx)
+# With Node.js (npx)
 npx serve .
 
-# VS Code kullaniyorsaniz Live Server eklentisi ile de acabilirsiniz
+# Or use VS Code's Live Server extension
 ```
 
-Tarayicinizda `http://localhost:8000` adresine gidin. Kamera izni istendigi zaman onaylayin.
+Open `http://localhost:8000` in your browser and allow camera access when prompted.
 
-## Dosya Yapisi
+## File Structure
 
 ```
-cam-drawer/
-  index.html    # Ana HTML sayfasi, toolbar ve canvas elemanlari
-  app.js        # Uygulama mantigi: el takibi, jest algilama, cizim motoru
-  styles.css    # Arayuz stilleri
+hand-canvas/
+  index.html    # Main HTML page with toolbar and canvas elements
+  app.js        # Application logic: hand tracking, gesture detection, drawing engine
+  styles.css    # UI styles
 ```
 
-## Nasil Calisir
+## How It Works
 
-1. Uygulama webcam'i acar ve her kareyi MediaPipe Hands + Face Mesh modeline gonderir
-2. El landmark'lari EMA (Exponential Moving Average) ile yumusatilir, titresim onlenir
-3. Basparmak (landmark 4) ile isaret parmagi ucu (landmark 8) arasindaki mesafe hesaplanir
-4. Mesafe esik degerinin altina dustugunde ardisik 3 kare boyunca onay bekler (hysteresis), sonra cizim baslar
-5. Cizim sirasinda isaret parmagi ucunun konumu takip edilir ve canvas uzerine cizgi cizilir
-6. Dil algilama icin agiz acikligi orani ve agiz bolgesindeki kirmizi renk baskinligi kontrol edilir
+1. The app opens the webcam and sends each frame to MediaPipe Hands + Face Mesh models
+2. Hand landmarks are smoothed using EMA (Exponential Moving Average) to prevent jitter
+3. The distance between the thumb tip (landmark 4) and index finger tip (landmark 8) is calculated
+4. When the distance drops below a threshold for 3 consecutive frames (hysteresis), drawing begins
+5. During drawing, the index finger tip position is tracked and lines are drawn on the canvas
+6. For tongue detection, the mouth openness ratio and red color dominance in the mouth region are checked
 
-## Tarayici Gereksinimleri
+## Browser Requirements
 
-- Kamera erisimi destekleyen modern bir tarayici (Chrome, Edge, Firefox)
-- HTTPS veya localhost (kamera izni icin gerekli)
+- A modern browser with camera access support (Chrome, Edge, Firefox)
+- HTTPS or localhost (required for camera permissions)
 
-## Lisans
+## License
 
-Bu proje kisisel kullanim icin gelistirilmistir.
+This project was developed for personal use.
